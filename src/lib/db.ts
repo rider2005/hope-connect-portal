@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 
 // Types for our database collections
@@ -8,6 +7,7 @@ export interface User {
   password: string;
   type: 'donor' | 'hospital';
   name?: string;
+  hospitalName?: string; // Added to User interface to make it compatible with Hospital
 }
 
 export interface Hospital extends User {
@@ -47,38 +47,38 @@ export interface Receiver {
   status: 'pending' | 'approved' | 'transported' | 'transplanted';
 }
 
-// Mock database
+// Mock database with explicit type casting
 const mockDb = {
   users: [
     {
       id: 'h1',
       email: 'mercy@hospital.com',
       password: 'password123',
-      type: 'hospital',
+      type: 'hospital' as const,
       hospitalName: 'Mercy Hospital'
     },
     {
       id: 'h2',
       email: 'central@hospital.com',
       password: 'password123',
-      type: 'hospital',
+      type: 'hospital' as const,
       hospitalName: 'Central Hospital'
     },
     {
       id: 'h3',
       email: 'hope@hospital.com',
       password: 'password123',
-      type: 'hospital',
+      type: 'hospital' as const,
       hospitalName: 'Hope Medical Center'
     },
     {
       id: 'h4',
       email: 'city@hospital.com',
       password: 'password123',
-      type: 'hospital',
+      type: 'hospital' as const,
       hospitalName: 'City General Hospital'
     }
-  ] as User[],
+  ] as User[], // Cast to User[] type
   donors: [] as Donor[],
   donations: [] as Donation[],
   receivers: [] as Receiver[]

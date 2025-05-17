@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -31,16 +30,15 @@ const Donate = () => {
     
     setIsSubmitting(true);
     
-    // Generate a unique donor ID
-    const donorId = `D${generateId().substring(0, 8).toUpperCase()}`;
+    // Generate a unique donor ID for the donation record
+    const uniqueDonorId = `D${generateId().substring(0, 8).toUpperCase()}`;
     
     // Get appointment date (2 days from now)
     const appointmentDate = getTwoDaysFromNow();
     
-    // Create donation record
+    // Create donation record (removed the duplicate donorId property)
     const donation = createDonation({
-      donorId,
-      donorId: currentUser.id,
+      donorId: currentUser.id, // Using currentUser.id as the donorId
       organ,
       bloodGroup,
       hospitalId,

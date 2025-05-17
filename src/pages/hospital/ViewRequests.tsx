@@ -68,7 +68,7 @@ const ViewRequests = () => {
                       request.status === 'pending' ? 'outline' :
                       request.status === 'approved' ? 'secondary' :
                       request.status === 'transported' ? 'default' :
-                      'success'
+                      'secondary' // Changed from 'success' to 'secondary' for transplanted status
                     }>
                       {request.status === 'pending' ? 'Pending' :
                        request.status === 'approved' ? 'Approved' :
