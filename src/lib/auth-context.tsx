@@ -122,7 +122,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       type: 'donor'
     });
 
-    // Create donor record - removed the 'id' property
+    // Create donor record with the same user data
     createDonor({
       email,
       password,

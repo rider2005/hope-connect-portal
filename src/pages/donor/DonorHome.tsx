@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { useDatabase, Donation } from '@/lib/db';
 import ConsentModal from '@/components/ConsentModal';
 import { Badge } from '@/components/ui/badge';
+import { sendHopeTokensConfirmation } from '@/lib/email';
 
 const DonorHome = () => {
   const { currentUser, donor } = useAuth();
@@ -35,7 +36,13 @@ const DonorHome = () => {
   }, [currentUser, getDonationsByDonorId, donor]);
   
   const handleRedeem = () => {
-    setRedeemMessage('Congratulations! You have successfully redeemed your Hope Tokens. Your community benefits will be processed shortly.');
+    setRedeemMessage('Congratulations! You have successfully redeemed your Hope Tokens for community benefits.');
+    
+    // Simulate confirming the redemption via email
+    if (donor) {
+      sendHopeTokensConfirmation(donor, 100);
+    }
+    
     setTimeout(() => {
       setRedeemMessage('');
     }, 5000);
@@ -49,7 +56,10 @@ const DonorHome = () => {
       <NavBar />
       
       <main className="flex-1 container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">Welcome, Donor</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">Welcome to HopeConnect</h1>
+        <p className="text-gray-600 mb-8">
+          Your gateway to transparent and efficient organ donation
+        </p>
         
         {redeemMessage && (
           <div className="mb-6 bg-green-50 border border-green-200 text-green-700 p-4 rounded-md">
@@ -60,25 +70,25 @@ const DonorHome = () => {
         <div className="grid md:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>Organ Donation</CardTitle>
+              <CardTitle>India's Organ Crisis</CardTitle>
               <CardDescription>
-                Learn about organ donation and its impact
+                Understanding the need for donors
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-gray-600 mb-4">
-                Organ donation is a life-saving gift. A single donor can save 
-                up to 8 lives and enhance many others.
+                India faces a critical organ shortage with over 300,000 patients awaiting 
+                transplants and at least 20 individuals dying daily due to unavailability.
               </p>
               <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                <li>Over 100,000 people are waiting for organ transplants</li>
-                <li>A new person is added to the waiting list every 10 minutes</li>
+                <li>Only 0.52 donations per million people</li>
+                <li>Far behind countries like Spain (49.6 pmp)</li>
                 <li>One organ donor can save up to eight lives</li>
               </ul>
             </CardContent>
             <CardFooter>
               <Link to="/donate">
-                <Button>Become a Donor</Button>
+                <Button className="bg-[#9b87f5] hover:bg-[#7E69AB]">Become a Donor</Button>
               </Link>
             </CardFooter>
           </Card>
@@ -121,6 +131,11 @@ const DonorHome = () => {
                           </p>
                         </>
                       )}
+                      {donation.status === 'organ_collected' && (
+                        <p className="text-sm text-gray-600 mt-2">
+                          Collection Date: {donation.collectionDate}
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -133,7 +148,7 @@ const DonorHome = () => {
             {donations.length > 0 && (
               <CardFooter>
                 <Link to="/donate">
-                  <Button variant="outline">Donate Again</Button>
+                  <Button variant="outline" className="border-[#9b87f5] text-[#9b87f5]">Donate Again</Button>
                 </Link>
               </CardFooter>
             )}
@@ -148,19 +163,27 @@ const DonorHome = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="bg-accent/20 p-4 rounded-lg text-center">
-                  <p className="text-2xl font-bold text-accent mb-1">100</p>
-                  <p className="text-sm text-accent">Hope Tokens Available</p>
+                <div className="bg-[#F1F0FB] p-4 rounded-lg text-center">
+                  <p className="text-2xl font-bold text-[#9b87f5] mb-1">100</p>
+                  <p className="text-sm text-[#7E69AB]">Hope Tokens Available</p>
                 </div>
                 <p className="text-gray-600 text-sm">
                   Thank you for your generous organ donation. Your Hope Tokens 
-                  can be redeemed for community benefits.
+                  can be redeemed for health credits, insurance perks, or tax benefits.
                 </p>
+                <div className="bg-gray-50 p-3 rounded text-xs text-gray-500">
+                  <p className="font-medium mb-1">Redemption Options:</p>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li>Health insurance discount (50 tokens)</li>
+                    <li>Tax credit certificate (75 tokens)</li>
+                    <li>Community service recognition (25 tokens)</li>
+                    <li>Full benefits package (100 tokens)</li>
+                  </ul>
+                </div>
               </CardContent>
               <CardFooter>
                 <Button 
-                  className="w-full" 
-                  variant="secondary"
+                  className="w-full bg-[#9b87f5] hover:bg-[#7E69AB]"
                   onClick={handleRedeem}
                 >
                   Redeem Tokens
@@ -177,18 +200,18 @@ const DonorHome = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 mb-4">
-                  Organ donation provides numerous benefits:
+                  HopeConnect rewards donors with Hope Tokens that provide:
                 </p>
                 <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                  <li>Save multiple lives with a single donation</li>
-                  <li>Give hope to families waiting for transplants</li>
-                  <li>Create a lasting legacy of generosity</li>
-                  <li>Contribute to medical research and innovation</li>
+                  <li>Health credits for preventive care</li>
+                  <li>Insurance perks for you and your family</li>
+                  <li>Tax benefits on annual filings</li>
+                  <li>Community recognition for your gift</li>
                 </ul>
               </CardContent>
               <CardFooter>
                 <Link to="/about">
-                  <Button variant="outline">Learn More</Button>
+                  <Button variant="outline" className="border-[#9b87f5] text-[#9b87f5]">Learn More</Button>
                 </Link>
               </CardFooter>
             </Card>

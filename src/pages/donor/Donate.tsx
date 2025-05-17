@@ -1,7 +1,7 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/lib/auth-context';
@@ -30,15 +30,12 @@ const Donate = () => {
     
     setIsSubmitting(true);
     
-    // Generate a unique donor ID for the donation record
-    const uniqueDonorId = `D${generateId().substring(0, 8).toUpperCase()}`;
-    
     // Get appointment date (2 days from now)
     const appointmentDate = getTwoDaysFromNow();
     
-    // Create donation record (removed the duplicate donorId property)
+    // Create donation record
     const donation = createDonation({
-      donorId: currentUser.id, // Using currentUser.id as the donorId
+      donorId: currentUser.id,
       organ,
       bloodGroup,
       hospitalId,
@@ -164,7 +161,7 @@ const Donate = () => {
                   
                   <Button 
                     type="submit" 
-                    className="w-full"
+                    className="w-full bg-[#9b87f5] hover:bg-[#7E69AB]"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? "Processing..." : "Submit Donation"}
@@ -175,7 +172,7 @@ const Donate = () => {
             <CardFooter className="flex-col text-center">
               <p className="text-sm text-muted-foreground">
                 Need more information before proceeding?{" "}
-                <a href="/about" className="text-primary hover:underline">
+                <a href="/about" className="text-[#9b87f5] hover:underline">
                   Learn more about the donation process
                 </a>
               </p>

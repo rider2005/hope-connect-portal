@@ -1,15 +1,16 @@
 
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle 
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useAuth } from '@/lib/auth-context';
+import { sendHopeTokensConfirmation } from '@/lib/email';
 
 interface ConsentModalProps {
   open: boolean;
@@ -17,96 +18,69 @@ interface ConsentModalProps {
 }
 
 const ConsentModal = ({ open, onOpenChange }: ConsentModalProps) => {
-  const { updateDonorConsent } = useAuth();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { updateDonorConsent, donor } = useAuth();
   
-  const handleConsent = async () => {
-    setIsSubmitting(true);
+  const handleConsent = () => {
     updateDonorConsent(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      onOpenChange(false);
-    }, 500);
-  };
-  
-  const handleDecline = () => {
-    updateDonorConsent(false);
+    
+    // Simulate sending Hope Tokens email
+    if (donor) {
+      sendHopeTokensConfirmation(donor, 100);
+    }
+    
     onOpenChange(false);
   };
   
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Hope Tokens Consent</DialogTitle>
           <DialogDescription>
-            Please read and consent to participate in our Hope Tokens program.
+            Receive Hope Tokens as recognition for your organ donation.
           </DialogDescription>
         </DialogHeader>
-        
-        <div className="space-y-4 max-h-[300px] overflow-y-auto text-sm text-gray-700">
+        <div className="space-y-4 py-4">
           <p>
-            <strong>HOPE TOKENS CONSENT AGREEMENT</strong>
+            Dear Donor,
           </p>
-          
           <p>
-            By accepting this agreement, you consent to participate in the HopeConnect 
-            Hope Tokens program, which rewards organ donors for their generous contributions 
-            to society.
+            Thank you for your selfless contribution to our organ donation program. 
+            We are pleased to inform you that you are eligible for our Hope Tokens program.
           </p>
-          
           <p>
-            <strong>What are Hope Tokens?</strong><br />
-            Hope Tokens are a reward system designed to recognize and appreciate the 
-            selfless act of organ donation. These tokens can be redeemed for various 
-            benefits and services within our network of partners.
+            <strong>What are Hope Tokens?</strong>
           </p>
-          
           <p>
-            <strong>How Hope Tokens Work:</strong>
+            Hope Tokens are our way of recognizing and appreciating your life-saving donation.
+            These tokens can be redeemed for various benefits including:
           </p>
-          <ul className="list-disc ml-5 space-y-1">
-            <li>Donors receive Hope Tokens when their organs are collected for donation.</li>
-            <li>Tokens are issued based on the specific organ donated and other factors.</li>
-            <li>Tokens are stored securely in your HopeConnect account.</li>
-            <li>Tokens can be redeemed through our platform for various benefits.</li>
+          <ul className="list-disc pl-6 space-y-1">
+            <li>Health insurance discounts</li>
+            <li>Tax benefits</li>
+            <li>Priority access to healthcare services</li>
+            <li>Recognition in our donor community</li>
           </ul>
-          
           <p>
-            <strong>Data Collection and Use:</strong><br />
-            By consenting, you allow HopeConnect to:
+            By giving consent, you will receive 100 Hope Tokens which will be added to 
+            your account immediately.
           </p>
-          <ul className="list-disc ml-5 space-y-1">
-            <li>Track your organ donation status and issue tokens accordingly.</li>
-            <li>Maintain records of your token balance and redemption history.</li>
-            <li>Communicate with you about your tokens and redemption opportunities.</li>
-          </ul>
-          
           <p>
-            <strong>Your Rights:</strong><br />
-            You have the right to:
+            Please confirm your consent to join the Hope Tokens program.
           </p>
-          <ul className="list-disc ml-5 space-y-1">
-            <li>Access your token balance and redemption history at any time.</li>
-            <li>Request detailed information about how your tokens are calculated.</li>
-            <li>Withdraw from the Hope Tokens program at any time.</li>
-            <li>Request deletion of your token data if you withdraw from the program.</li>
-          </ul>
         </div>
-        
-        <DialogFooter className="flex-col sm:flex-row sm:justify-between gap-2">
+        <DialogFooter>
           <Button 
             variant="outline" 
-            onClick={handleDecline}
-            disabled={isSubmitting}
+            onClick={() => onOpenChange(false)}
           >
             Decline
           </Button>
           <Button 
-            onClick={handleConsent} 
-            disabled={isSubmitting}
+            className="bg-[#9b87f5] hover:bg-[#7E69AB]"
+            onClick={handleConsent}
           >
-            I Consent
+            Give Consent
           </Button>
         </DialogFooter>
       </DialogContent>

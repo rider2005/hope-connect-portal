@@ -8,6 +8,7 @@ import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import { useDatabase, Receiver } from '@/lib/db';
 import { Check, Truck } from 'lucide-react';
+import { sendTransplantSuccessNotification } from '@/lib/email';
 
 const ViewRequests = () => {
   const { currentUser } = useAuth();
@@ -25,13 +26,24 @@ const ViewRequests = () => {
     updateReceiver(receiverId, { status: newStatus });
     
     // Update local state
-    setRequests(prev => 
-      prev.map(request =>
-        request.id === receiverId
-          ? { ...request, status: newStatus }
-          : request
-      )
+    const updatedRequests = requests.map(request =>
+      request.id === receiverId
+        ? { ...request, status: newStatus }
+        : request
     );
+    
+    setRequests(updatedRequests);
+    
+    // If transplant is completed, send notification
+    if (newStatus === 'transplanted' && currentUser) {
+      const request = updatedRequests.find(r => r.id === receiverId);
+      if (request) {
+        sendTransplantSuccessNotification(
+          currentUser as any,
+          request
+        );
+      }
+    }
   };
   
   return (
@@ -51,7 +63,7 @@ const ViewRequests = () => {
                 No organ requests have been made yet.
               </p>
               <div className="flex justify-center mt-4">
-                <Button asChild>
+                <Button asChild className="bg-[#9b87f5] hover:bg-[#7E69AB]">
                   <a href="/hospital/request">Request an Organ</a>
                 </Button>
               </div>
@@ -68,7 +80,7 @@ const ViewRequests = () => {
                       request.status === 'pending' ? 'outline' :
                       request.status === 'approved' ? 'secondary' :
                       request.status === 'transported' ? 'default' :
-                      'secondary' // Changed from 'success' to 'secondary' for transplanted status
+                      'secondary' // Using 'secondary' for transplanted status instead of 'success'
                     }>
                       {request.status === 'pending' ? 'Pending' :
                        request.status === 'approved' ? 'Approved' :
@@ -95,6 +107,7 @@ const ViewRequests = () => {
                         <Button 
                           onClick={() => handleUpdateStatus(request.id, 'approved')}
                           size="sm"
+                          className="bg-[#9b87f5] hover:bg-[#7E69AB]"
                         >
                           <Check className="h-4 w-4 mr-1" />
                           Approve
@@ -106,6 +119,7 @@ const ViewRequests = () => {
                           onClick={() => handleUpdateStatus(request.id, 'transported')}
                           size="sm"
                           variant="outline"
+                          className="text-[#9b87f5] border-[#9b87f5]"
                         >
                           <Truck className="h-4 w-4 mr-1" />
                           Organ Transported

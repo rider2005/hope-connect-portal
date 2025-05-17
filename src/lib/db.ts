@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 
 // Types for our database collections
@@ -7,7 +8,7 @@ export interface User {
   password: string;
   type: 'donor' | 'hospital';
   name?: string;
-  hospitalName?: string; // Added to User interface to make it compatible with Hospital
+  hospitalName?: string; // For hospital users
 }
 
 export interface Hospital extends User {
@@ -92,6 +93,13 @@ const STORAGE_KEYS = {
   RECEIVERS: 'hopeconnect_receivers',
 };
 
+// MongoDB connection string
+export const MONGODB_URI = 'mongodb+srv://chc:chc@cluster0.gtfwke1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+
+// Note: In a real application, we would use this connection string with a backend server
+// For demo purposes, we're simulating MongoDB with localStorage
+console.log("MongoDB connection would be established with:", MONGODB_URI);
+
 // Initialize database from localStorage or use mock data
 const initializeDb = () => {
   try {
@@ -119,15 +127,18 @@ const initializeDb = () => {
   }
 };
 
-// Save data to localStorage
+// Save data to localStorage (simulating MongoDB operations)
 const saveToLocalStorage = (data: typeof mockDb) => {
   try {
     localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(data.users));
     localStorage.setItem(STORAGE_KEYS.DONORS, JSON.stringify(data.donors));
     localStorage.setItem(STORAGE_KEYS.DONATIONS, JSON.stringify(data.donations));
     localStorage.setItem(STORAGE_KEYS.RECEIVERS, JSON.stringify(data.receivers));
+    
+    // Simulate MongoDB log
+    console.log("Data saved to simulated MongoDB database");
   } catch (error) {
-    console.error('Error saving to localStorage:', error);
+    console.error('Error saving to simulated MongoDB database:', error);
   }
 };
 
@@ -153,6 +164,7 @@ export function useDatabase() {
       ...prev, 
       users: [...prev.users, newUser] 
     }));
+    console.log("User created in simulated MongoDB:", newUser);
     return newUser;
   };
 
@@ -167,6 +179,7 @@ export function useDatabase() {
       ...prev,
       donors: [...prev.donors, newDonor]
     }));
+    console.log("Donor created in simulated MongoDB:", newDonor);
     return newDonor;
   };
 
@@ -181,6 +194,7 @@ export function useDatabase() {
         donor.id === donorId ? { ...donor, ...updates } : donor
       )
     }));
+    console.log("Donor updated in simulated MongoDB:", donorId, updates);
   };
 
   // Donation operations
@@ -190,6 +204,7 @@ export function useDatabase() {
       ...prev,
       donations: [...prev.donations, newDonation]
     }));
+    console.log("Donation created in simulated MongoDB:", newDonation);
     return newDonation;
   };
 
@@ -208,6 +223,7 @@ export function useDatabase() {
         donation.id === donationId ? { ...donation, ...updates } : donation
       )
     }));
+    console.log("Donation updated in simulated MongoDB:", donationId, updates);
   };
 
   // Receiver operations
@@ -217,6 +233,7 @@ export function useDatabase() {
       ...prev,
       receivers: [...prev.receivers, newReceiver]
     }));
+    console.log("Receiver created in simulated MongoDB:", newReceiver);
     return newReceiver;
   };
 
@@ -231,11 +248,34 @@ export function useDatabase() {
         receiver.id === receiverId ? { ...receiver, ...updates } : receiver
       )
     }));
+    console.log("Receiver updated in simulated MongoDB:", receiverId, updates);
   };
 
   // Get all hospitals
   const getAllHospitals = (): Hospital[] => {
     return db.users.filter(user => user.type === 'hospital') as Hospital[];
+  };
+
+  // AI-driven matching functions (simulated)
+  const findMatchingDonations = (receiverId: string, organNeeded: string, bloodGroup: string) => {
+    // Simulate AI matching algorithm
+    console.log(`AI matching algorithm running for ${receiverId} needing ${organNeeded} with blood group ${bloodGroup}`);
+    
+    // In a real application, this would use sophisticated matching criteria
+    const availableDonations = db.donations.filter(donation => 
+      donation.organ === organNeeded && 
+      donation.bloodGroup === bloodGroup &&
+      donation.status === 'test_completed'
+    );
+    
+    return availableDonations;
+  };
+
+  // Simulate blockchain verification
+  const verifyBlockchainIntegrity = () => {
+    // In a real application, this would verify the blockchain integrity
+    console.log("Blockchain integrity verified");
+    return true;
   };
 
   return {
@@ -252,7 +292,9 @@ export function useDatabase() {
     createReceiver,
     getReceiverByHospitalId,
     updateReceiver,
-    getAllHospitals
+    getAllHospitals,
+    findMatchingDonations,
+    verifyBlockchainIntegrity
   };
 }
 

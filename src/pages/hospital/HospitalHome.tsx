@@ -9,8 +9,8 @@ import { useDatabase, Donation } from '@/lib/db';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formatDate } from '@/lib/db';
+import AiSystemStatus from '@/components/AiSystemStatus';
 
 const HospitalHome = () => {
   const { currentUser, hospital } = useAuth();
@@ -64,7 +64,7 @@ const HospitalHome = () => {
           {hospital?.hospitalName || 'Hospital'} Dashboard
         </h1>
         <p className="text-gray-600 mb-8">
-          Manage organ donations and requests
+          Manage organ donations and requests through our AI-powered platform
         </p>
         
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
@@ -93,6 +93,7 @@ const HospitalHome = () => {
                         <Button 
                           size="sm" 
                           variant="outline"
+                          className="text-[#9b87f5] border-[#9b87f5]"
                           onClick={() => openCollectionDialog(donation)}
                         >
                           Mark Deceased
@@ -125,12 +126,16 @@ const HospitalHome = () => {
               </p>
             </CardContent>
             <CardFooter>
-              <Button className="w-full" asChild>
+              <Button className="w-full bg-[#9b87f5] hover:bg-[#7E69AB]" asChild>
                 <a href="/hospital/request">Request an Organ</a>
               </Button>
             </CardFooter>
           </Card>
           
+          <AiSystemStatus />
+        </div>
+        
+        <div className="grid lg:grid-cols-2 gap-6 mb-8">
           <Card>
             <CardHeader>
               <CardTitle>Pending Requests</CardTitle>
@@ -146,6 +151,28 @@ const HospitalHome = () => {
             <CardFooter>
               <Button variant="outline" className="w-full" asChild>
                 <a href="/hospital/requests">View Requests</a>
+              </Button>
+            </CardFooter>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Geospatial Transport Hub</CardTitle>
+              <CardDescription>
+                Track organ transport in real-time
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">
+                Monitor the transport of organs with our advanced logistics system powered by Mapbox and OR-Tools.
+              </p>
+              <div className="mt-4 p-2 bg-gray-100 text-xs text-gray-500 rounded">
+                Transport logistics module is currently in beta. Full functionality coming soon.
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button variant="outline" className="w-full" disabled>
+                Open Transport Hub
               </Button>
             </CardFooter>
           </Card>
